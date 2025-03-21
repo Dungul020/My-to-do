@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const tasks = await Task.find();
-        res.send(tasks);
+         res.json(tasks); 
     } catch (error) {
         res.send(error);
     }
