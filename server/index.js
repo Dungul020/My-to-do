@@ -27,7 +27,6 @@ const __dirname = path.resolve();
   app.use(
     cors({
       origin: allowedOrigins,
-      credentials: true, // Allow cookies
       methods: ["GET", "POST", "PUT", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
     })
