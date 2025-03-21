@@ -10,7 +10,7 @@ connectDB();
 
 const allowedOrigins = [
     "http://localhost:3000",  
-    "https://todo-list-f11l.onrender.com",  
+    // "https://todo-list-f11l.onrender.com",  
   ];
 
 const __dirname = path.resolve();
