@@ -9,28 +9,31 @@ import {
 class Tasks extends Component {
   state = { tasks: [], currentTask: "" };
 
-  async componentDidMount() {
-    try {
-      const { data } = await getTasks();
-      console.log("Fetched tasks data:", data);
+ async componentDidMount() {
+  try {
+    const response = await getTasks();
+    console.log("🚨 Raw response from getTasks():", response);
 
-      // ✅ Robust handling of response data
-      let tasks = [];
+    const { data } = response;
+    console.log("📦 Data received:", data);
 
-      if (Array.isArray(data)) {
-        tasks = data;
-      } else if (data && Array.isArray(data.tasks)) {
-        tasks = data.tasks;
-      } else {
-        console.warn("Unexpected tasks response format:", data);
-      }
+    let tasks = [];
 
-      this.setState({ tasks });
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-      this.setState({ tasks: [] });
+    if (Array.isArray(data)) {
+      tasks = data;
+    } else if (data && Array.isArray(data.tasks)) {
+      tasks = data.tasks;
+    } else {
+      console.warn("❌ Unexpected data format. Defaulting to empty array.");
     }
+
+    this.setState({ tasks });
+  } catch (error) {
+    console.error("❌ Error fetching tasks:", error);
+    this.setState({ tasks: [] });
   }
+}
+
 
   handleChange = ({ currentTarget: input }) => {
     this.setState({ currentTask: input.value });
