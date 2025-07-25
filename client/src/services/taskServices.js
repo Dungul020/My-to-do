@@ -1,5 +1,9 @@
+// client/src/api.js (or wherever your file is)
+
 import axios from "axios";
-const apiUrl = "http://localhost:5000/api/tasks";
+
+// Use env var or fallback to localhost for development
+const apiUrl = `${process.env.REACT_APP_API_URL || "http://localhost:5000"}/api/tasks`;
 
 export function getTasks() {
     return axios.get(apiUrl);
@@ -10,9 +14,9 @@ export function addTask(task) {
 }
 
 export function updateTask(id, task) {
-    return axios.put(apiUrl + "/" + id, task);
+    return axios.put(`${apiUrl}/${id}`, task);
 }
 
 export function deleteTask(id) {
-    return axios.delete(apiUrl + "/" + id);
+    return axios.delete(`${apiUrl}/${id}`);
 }
