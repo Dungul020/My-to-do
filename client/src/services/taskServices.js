@@ -3,7 +3,7 @@
 import axios from "axios";
 
 // Use env var or fallback to localhost for development
-const apiUrl = `${process.env.REACT_APP_API_URL`;
+const apiUrl = `${process.env.REACT_APP_API_URL}`;
 
 export function getTasks() {
     return axios.get(apiUrl);
