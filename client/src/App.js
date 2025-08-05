@@ -19,14 +19,28 @@ class App extends React.Component {
     currentTask: "",
   };
 
-  // Fetch tasks from backend
+  // ✅ Updated: Fetch and properly extract tasks
   async componentDidMount() {
     try {
-      const tasks = await getTasks();
-      console.log("Fetched tasks:", tasks);
+      const response = await getTasks();
+      console.log("📦 Raw response from getTasks:", response);
+
+      let tasks = [];
+
+      if (Array.isArray(response)) {
+        tasks = response;
+      } else if (response && Array.isArray(response.data)) {
+        tasks = response.data;
+      } else if (response?.data?.tasks && Array.isArray(response.data.tasks)) {
+        tasks = response.data.tasks;
+      } else {
+        console.warn("❌ Unexpected data format. Defaulting to empty array.");
+      }
+
       this.setState({ tasks });
     } catch (error) {
-      console.error("Error loading tasks:", error);
+      console.error("❌ Error loading tasks:", error);
+      this.setState({ tasks: [] });
     }
   }
 
