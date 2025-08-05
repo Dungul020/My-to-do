@@ -1,5 +1,5 @@
 import React from "react";
-import Tasks from "./Tasks";
+import Tasks from "./Tasks.js";
 import { Paper, TextField } from "@material-ui/core";
 import { Checkbox, Button } from "@material-ui/core";
 import "./App.css";
