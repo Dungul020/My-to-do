@@ -1,42 +1,44 @@
 import axios from "axios";
 
-// ✅ Use the correct base URL (for production) and ensure it ends without a trailing slash
-const apiUrl = process.env.REACT_APP_API_URL?.replace(/\/$/, "") || "https://my-to-do-5sap.onrender.com";
+// Configure base URL - use environment variable with fallback
+const apiUrl = process.env.REACT_APP_API_URL || "https://my-to-do-5sap.onrender.com";
 
-// ✅ Create Axios instance with proper base URL
+// Create axios instance with default config
 const api = axios.create({
   baseURL: apiUrl,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: false, // only needed if you're using cookies/auth
+  withCredentials: false, // Set to true if using cookies/auth
 });
 
-// ✅ Optional: Log base URL once for debugging
-console.log("Using API Base URL:", apiUrl);
-
-// ✅ Interceptor for responses
+// Response interceptor to handle errors
 api.interceptors.response.use(
   (response) => {
+    // Ensure data exists and is in expected format
     if (!response.data) {
       return Promise.reject(new Error("No data in response"));
     }
     return response;
   },
   (error) => {
+    // Handle network errors and server errors
     if (error.response) {
+      // Server responded with non-2xx status
       console.error("API Error:", error.response.status, error.response.data);
       return Promise.reject({
         status: error.response.status,
         message: error.response.data?.message || "Request failed",
       });
     } else if (error.request) {
+      // Request made but no response
       console.error("Network Error:", error.message);
       return Promise.reject({
         status: null,
         message: "Network error - please check your connection",
       });
     } else {
+      // Other errors
       console.error("API Setup Error:", error.message);
       return Promise.reject({
         status: null,
@@ -46,29 +48,28 @@ api.interceptors.response.use(
   }
 );
 
-// ✅ GET all tasks
-export async function getTasks() {
-  try {
-    const response = await api.get("/api/tasks"); // Correct endpoint
-    return Array.isArray(response.data) ? response.data : [];
-  } catch (error) {
-    console.error("Failed to fetch tasks:", error);
-    return []; // Safe fallback
-  }
+export const getTasks = async () => {
+    try {
+        const response = await axios.get(apiUrl);
+        console.log("🚨 Raw response from getTasks():", response.data); // Should log array
+        return response.data;
+    } catch (error) {
+        console.error("Failed to fetch tasks", error);
+        return []; // Return empty array on failure
+    }
 }
 
-// ✅ POST a new task
 export async function addTask(task) {
   try {
-    const response = await api.post("/api/tasks", task); // Correct endpoint
+    const response = await api.post("/api/tasks", task);
+     console.log("🚀 Added Task Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to add task:", error);
-    throw error;
+    throw error; // Re-throw for component to handle
   }
 }
 
-// ✅ PUT (update) a task
 export async function updateTask(id, task) {
   try {
     const response = await api.put(`/api/tasks/${id}`, task);
@@ -79,7 +80,6 @@ export async function updateTask(id, task) {
   }
 }
 
-// ✅ DELETE a task
 export async function deleteTask(id) {
   try {
     const response = await api.delete(`/api/tasks/${id}`);
